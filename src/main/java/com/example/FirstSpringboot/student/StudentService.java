@@ -1,5 +1,6 @@
 package com.example.FirstSpringboot.student;
 
+import com.example.FirstSpringboot.exceptions.EmailTakenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,9 +25,9 @@ public class StudentService {
     public void addNewStudent(Student student) {
         System.out.println(student);
 
-        Optional<Student> studentOptionnal = studentRepository.findStudentByEmail(student.getEmail());
-        if(studentOptionnal.isPresent())
-            throw new IllegalStateException("Email taken");
+        Optional<Student> studentOptional = studentRepository.findStudentByEmail(student.getEmail());
+        if(studentOptional.isPresent())
+            throw new EmailTakenException(student.getEmail());
 
         studentRepository.save(student);
     }
@@ -49,8 +50,8 @@ public class StudentService {
 
         if(email != null && email.length() > 0 && !Objects.equals(student.getEmail(), email))
         {
-            Optional<Student> studentOptionnal = studentRepository.findStudentByEmail(email);
-            if(studentOptionnal.isPresent())
+            Optional<Student> studentOptional = studentRepository.findStudentByEmail(email);
+            if(studentOptional.isPresent())
                 throw new IllegalStateException("Email taken");
 
             student.setEmail(email);
