@@ -1,6 +1,7 @@
 package com.example.FirstSpringboot.student;
 
 import com.example.FirstSpringboot.exceptions.EmailTakenException;
+import com.example.FirstSpringboot.exceptions.StudentIdNotExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,13 +37,13 @@ public class StudentService {
         if(studentRepository.existsById(studentId))
             studentRepository.deleteById(studentId);
         else
-            throw new IllegalStateException("Student with id " + studentId + " does not exists");
+            throw new StudentIdNotExistsException(studentId);
     }
 
     @Transactional
     public void updateStudent(Long studentId, String name, String email) {
         Student student = studentRepository.findById(studentId).orElseThrow(
-                () -> new IllegalStateException("Student with id " + studentId + " does not exists")
+                () -> new StudentIdNotExistsException(studentId)
         );
 
         if(name != null && name.length() > 0 && !Objects.equals(student.getName(), name))
@@ -52,7 +53,7 @@ public class StudentService {
         {
             Optional<Student> studentOptional = studentRepository.findStudentByEmail(email);
             if(studentOptional.isPresent())
-                throw new IllegalStateException("Email taken");
+                throw new EmailTakenException(student.getEmail());
 
             student.setEmail(email);
         }

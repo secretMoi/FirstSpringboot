@@ -31,4 +31,13 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
         return handleExceptionInternal(e, errorMessage, request);
     }
+
+    @ExceptionHandler(value = {StudentIdNotExistsException.class})
+    protected ResponseEntity<Object> handle(StudentIdNotExistsException e, WebRequest request){
+        log.info(e.getMessage(), e);
+
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_FOUND, e.getMessage());
+
+        return handleExceptionInternal(e, errorMessage, request);
+    }
 }
