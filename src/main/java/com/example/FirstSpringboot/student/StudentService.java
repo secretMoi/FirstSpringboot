@@ -26,8 +26,8 @@ public class StudentService {
     public void addNewStudent(Student student) {
         System.out.println(student);
 
-        Optional<Student> studentOptional = studentRepository.findStudentByEmail(student.getEmail());
-        if(studentOptional.isPresent())
+        boolean isEmailTaken = studentRepository.findStudentByEmail(student.getEmail()).isPresent();
+        if(isEmailTaken)
             throw new EmailTakenException(student.getEmail());
 
         studentRepository.save(student);
